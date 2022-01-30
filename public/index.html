@@ -32,20 +32,33 @@
       function handleCredentialResponse(response) {
         // decodeJwtResponse() is a custom function defined by you
         // to decode the credential response.
-        const body = { id_token: response.credential };
-        fetch("http://localhost:8080/api/auth/google", {
+
+        const id_token = response.credential;
+        var data = { id_token };
+        var url = window.location.hostname.includes("localhost")
+          ? "http://localhost:8080/api/auth/google"
+          : "https://restserver-guille.herokuapp.com/api/auth/google";
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var myInit = {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        })
+          headers: myHeaders,
+          mode: "cors",
+          cache: "default",
+          body: JSON.stringify(data),
+        };
+
+        var myRequest = new Request(url, myInit);
+        fetch(myRequest)
           .then((resp) => resp.json())
-          .then((resp) => {
-            localStorage.setItem("email", resp.usuario.correo);
+          .then((data) => {
             location.reload();
+            localStorage.setItem("email", data.usuario.correo);
+            console.log("Login Google OK", data);
           })
           .catch(console.warn);
+        console.log("id_token", response.credential);
       }
 
       const button = document.getElementById("google_signout");
