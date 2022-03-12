@@ -9,7 +9,7 @@ class Server {
     this.usuariosPath = "/api/usuarios";
     this.authPath = "/api/auth";
 
-    //Conectar DB
+    //Metodo Conectar DB
     this.conectarDB();
 
     //Middlewares
